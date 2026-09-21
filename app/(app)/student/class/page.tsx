@@ -31,16 +31,16 @@ import {
 import { cn } from '@/lib/utils';
 
 const CLASS_OPTIONS = [
-  { id: 'cy-vahda-2627', name: 'VAHDA', num: 4, isMyClass: true },
+  { id: 'cy-vahda-2627', name: 'VAHDA', num: 4 },
   { id: 'cy-sada-2627', name: "SA'DA", num: 1 },
   { id: 'cy-sidra-2627', name: 'SIDRA', num: 2 },
   { id: 'cy-suffa-2627', name: 'SUFFA', num: 3 },
   { id: 'cy-class5-2627', name: 'HUDA', num: 5 },
   { id: 'cy-alfa-2627', name: 'ALFA', num: 6 },
-  { id: 'cy-class7-2627', name: 'CLASS 7', num: 7 },
-  { id: 'cy-degree1-2627', name: 'DEGREE 1', num: 8 },
-  { id: 'cy-degree2-2627', name: 'DEGREE 2', num: 9 },
-  { id: 'cy-degree3-2627', name: 'DEGREE 3', num: 10 },
+  { id: 'cy-class7-2627', name: 'SAFWA', num: 7 },
+  { id: 'cy-degree1-2627', name: 'THUFA', num: 8 },
+  { id: 'cy-degree2-2627', name: 'NAJWA', num: 9 },
+  { id: 'cy-degree3-2627', name: 'WIDAD', num: 10 },
   { id: 'all', name: 'All Classes', num: 0 },
 ];
 
@@ -58,10 +58,15 @@ export default function StudentClassPage() {
 
   const currentClassName = currentStudent?.className ?? user.className ?? 'VAHDA';
 
+  const classOptions = CLASS_OPTIONS.map(c => ({
+    ...c,
+    isMyClass: c.name.toLowerCase() === currentClassName.toLowerCase(),
+  }));
+
   // Determine which students to show
   let targetStudents = allStudents;
   if (selectedClassId !== 'all') {
-    const selectedOption = CLASS_OPTIONS.find(c => c.id === selectedClassId);
+    const selectedOption = classOptions.find(c => c.id === selectedClassId);
     if (selectedOption?.num === 4 || selectedOption?.name === 'VAHDA') {
       targetStudents = vahdaStudents;
     } else if (selectedOption && selectedOption.num > 0) {
@@ -85,7 +90,7 @@ export default function StudentClassPage() {
     );
   });
 
-  const selectedClassObj = CLASS_OPTIONS.find(c => c.id === selectedClassId);
+  const selectedClassObj = classOptions.find(c => c.id === selectedClassId);
   const isMyClassSelected = selectedClassObj?.isMyClass || selectedClassObj?.name === currentClassName;
 
   const openWhatsAppPhoto = (s: typeof targetStudents[0]) => {
@@ -143,7 +148,7 @@ export default function StudentClassPage() {
           </Link>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {CLASS_OPTIONS.map(c => {
+          {classOptions.map(c => {
             const isSelected = selectedClassId === c.id;
             return (
               <button
