@@ -50,7 +50,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden bg-slate-950">
       {/* Desktop sidebar - Complete, uninterrupted solid dark 288px (w-72) width */}
-      <aside className="hidden lg:flex lg:w-72 lg:min-w-[18rem] lg:max-w-[18rem] lg:flex-shrink-0 h-full bg-slate-950 border-r border-slate-800 z-30">
+      <aside className="hidden lg:flex lg:w-72 lg:min-w-[18rem] lg:max-w-[18rem] lg:flex-shrink-0 h-full bg-slate-950 border-r border-slate-800 z-30" suppressHydrationWarning>
         <AppSidebar />
       </aside>
 

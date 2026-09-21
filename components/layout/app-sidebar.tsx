@@ -279,11 +279,11 @@ export function AppSidebar({ onClose }: AppSidebarProps) {
           ))}
 
           {/* Academic Term Progress & Cohort Widget (fills middle empty space with high utility) */}
-          <div className="mt-6 mx-1 p-3.5 rounded-2xl bg-gradient-to-br from-slate-900/90 to-indigo-950/40 border border-slate-800/80 shadow-md">
+          <div className="mt-6 mx-1 p-3.5 rounded-2xl bg-gradient-to-br from-slate-900/90 to-indigo-950/40 border border-slate-800/80 shadow-md" suppressHydrationWarning>
             <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-bold text-amber-300 flex items-center gap-1.5">
+              <span className="font-bold text-amber-300 flex items-center gap-1.5" suppressHydrationWarning>
                 <GraduationCap className="w-4 h-4 text-amber-400" />
-                Class {displayClassName}
+                Class {displayClassName || (effectiveRole === 'student' ? 'VAHDA' : 'Active')}
               </span>
               <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Active
@@ -342,28 +342,28 @@ export function AppSidebar({ onClose }: AppSidebarProps) {
               </div>
 
               {/* Name & metadata */}
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1" suppressHydrationWarning>
                 <Link
                   href={effectiveRole === 'student' ? '/student/profile' : effectiveRole === 'parent' ? '/parent/my-son' : '/admin/profile'}
                   className="block group/link"
                 >
-                  <p className="text-xs sm:text-[13px] font-black text-white group-hover/link:text-indigo-300 truncate transition-colors leading-tight">
+                  <p className="text-xs sm:text-[13px] font-black text-white group-hover/link:text-indigo-300 truncate transition-colors leading-tight" suppressHydrationWarning>
                     {displayUserName}
                   </p>
                 </Link>
 
-                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap" suppressHydrationWarning>
                   {(displayClassName || effectiveRole === 'admin') && (
-                    <span className="text-[10px] font-bold text-indigo-300 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-700/50">
+                    <span className="text-[10px] font-bold text-indigo-300 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-700/50" suppressHydrationWarning>
                       {effectiveRole === 'admin'
                         ? 'Admin Staff'
                         : effectiveRole === 'student'
-                        ? `Class: ${displayClassName}`
+                        ? `Class: ${displayClassName || 'VAHDA'}`
                         : 'Parent'}
                     </span>
                   )}
                   {displayAdmissionNo && (
-                    <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-600/30">
+                    <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-600/30" suppressHydrationWarning>
                       #{displayAdmissionNo}
                     </span>
                   )}

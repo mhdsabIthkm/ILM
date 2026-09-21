@@ -164,11 +164,11 @@ export function UserProfileMenu() {
         </div>
 
         {/* User Info (hidden on small screens) */}
-        <div className="text-left hidden sm:block">
-          <p className="text-xs font-semibold text-slate-800 leading-tight truncate max-w-[130px]">
+        <div className="text-left hidden sm:block" suppressHydrationWarning>
+          <p className="text-xs font-semibold text-slate-800 leading-tight truncate max-w-[130px]" suppressHydrationWarning>
             {userName}
           </p>
-          <p className="text-[10px] text-slate-400 leading-tight truncate max-w-[130px]">
+          <p className="text-[10px] text-slate-400 leading-tight truncate max-w-[130px]" suppressHydrationWarning>
             {role === 'admin'
               ? adminEmail
               : role === 'student'
