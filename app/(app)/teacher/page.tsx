@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { StatCard } from '@/components/ui/stat-card';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { ClassAvatar } from '@/components/ui/class-avatar';
+import { getClassCharacter } from '@/lib/mock-data/class-characters';
 import { allMeetings } from '@/lib/mock-data/meetings';
 import { classYears } from '@/lib/mock-data/cohorts';
 import { formatDate, getMeetingStatusLabel } from '@/lib/utils';
@@ -60,18 +62,26 @@ export default function TeacherDashboard() {
           <h2 className="text-sm font-semibold text-slate-900">My Classes</h2>
         </div>
         <div className="divide-y divide-gray-50">
-          {myClasses.map(cy => (
-            <div key={cy.id} className="flex items-center gap-4 px-5 py-4">
-              <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base text-indigo-700">
-                {cy.displayName.slice(0, 2)}
+          {myClasses.map(cy => {
+            const character = getClassCharacter(cy.displayName);
+            return (
+              <div key={cy.id} className="flex items-center gap-4 px-5 py-4">
+                <ClassAvatar name={cy.displayName} level={cy.level} size="md" className="ring-2 ring-indigo-100" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-slate-900">{cy.displayName}</p>
+                    {character && (
+                      <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-full">
+                        {character.characterName}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500">35 students · Level {cy.level}</p>
+                </div>
+                <Link href={`/admin/classes/${cy.id}`} className="text-xs text-indigo-600 hover:underline font-semibold">View Class →</Link>
               </div>
-              <div className="flex-1">
-                <p className="font-semibold text-slate-900">{cy.displayName}</p>
-                <p className="text-xs text-slate-500">35 students · Level {cy.level}</p>
-              </div>
-              <Link href={`/admin/classes/${cy.id}`} className="text-xs text-indigo-600 hover:underline">View Class →</Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

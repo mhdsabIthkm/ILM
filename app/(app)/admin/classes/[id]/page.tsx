@@ -7,6 +7,8 @@ import { classYears } from '@/lib/mock-data/cohorts';
 import { getStudentsByClass } from '@/lib/mock-data/students';
 import { allMeetings, vahdaMeeting1Awards } from '@/lib/mock-data/meetings';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { ClassAvatar } from '@/components/ui/class-avatar';
+import { getClassCharacter } from '@/lib/mock-data/class-characters';
 import { StudentAvatar } from '@/components/ui/student-avatar';
 import { StatCard } from '@/components/ui/stat-card';
 import { WhatsAppPhotoModal, PhotoModalData } from '@/components/ui/whatsapp-photo-modal';
@@ -67,6 +69,7 @@ export default function ClassProfilePage() {
   );
 
   const isVahda = classId === 'cy-vahda-2627';
+  const character = getClassCharacter(cy.displayName);
 
   const openStudentPhotoModal = (s: typeof students[0]) => {
     setActivePhotoModal({
@@ -85,17 +88,32 @@ export default function ClassProfilePage() {
         <Link href="/admin/classes" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 mb-3">
           <ArrowLeft className="w-3.5 h-3.5" /> All Classes
         </Link>
-        <div className="flex items-start justify-between flex-wrap gap-3">
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold text-slate-900">{cy.displayName}</h1>
-              <StatusBadge
-                status={cy.ilmEnabled ? 'ilm' : 'no_ilm'}
-                label={cy.ilmEnabled ? 'ILM Active' : 'No ILM'}
-                showDot={false}
-              />
+        <div className="flex items-start justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <ClassAvatar
+              name={cy.displayName}
+              level={cy.level}
+              size="xl"
+              className="w-16 h-16 sm:w-18 sm:h-18 ring-4 ring-indigo-50 shadow-md"
+            />
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl font-extrabold text-slate-900">{cy.displayName}</h1>
+                {character && (
+                  <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 rounded-full">
+                    {character.characterName}
+                  </span>
+                )}
+                <StatusBadge
+                  status={cy.ilmEnabled ? 'ilm' : 'no_ilm'}
+                  label={cy.ilmEnabled ? 'ILM Active' : 'No ILM'}
+                  showDot={false}
+                />
+              </div>
+              <p className="text-sm text-slate-500 mt-0.5">
+                Academic Year 2026–27 · Level {cy.level} · {students.length} students enrolled
+              </p>
             </div>
-            <p className="text-sm text-slate-500 mt-0.5">Academic Year 2026–27 · {students.length} students enrolled</p>
           </div>
           <div className="flex gap-2">
             <Link href={`/admin/meetings/${isVahda ? 'meeting-vahda-01' : '#'}`} className="px-3 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors shadow-2xs">

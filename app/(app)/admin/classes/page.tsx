@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { ClassAvatar } from '@/components/ui/class-avatar';
+import { getClassCharacter } from '@/lib/mock-data/class-characters';
 import { StudentAvatar } from '@/components/ui/student-avatar';
 import { Users, Calendar, ChevronRight, Eye } from 'lucide-react';
 import { classYears } from '@/lib/mock-data/cohorts';
@@ -52,6 +54,7 @@ export default function ClassesPage() {
           const meetingCount = meetingCountByClass[cy.id] ?? 0;
           const classStudents = allStudents.filter(s => s.classYearId === cy.id || (cy.id === 'cy-class5-2627' && s.classNum === 5));
           const previewStudents = classStudents.slice(0, 5);
+          const character = getClassCharacter(cy.displayName);
 
           return (
             <div
@@ -63,15 +66,20 @@ export default function ClassesPage() {
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5">
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className={cn(
-                    'w-12 h-12 rounded-xl flex items-center justify-center text-base font-bold flex-shrink-0 shadow-2xs',
-                    cy.ilmEnabled ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600'
-                  )}>
-                    {cy.displayName.slice(0, 2)}
-                  </div>
+                  <ClassAvatar
+                    name={cy.displayName}
+                    level={cy.level}
+                    size="lg"
+                    className="w-13 h-13 sm:w-14 sm:h-14 ring-2 ring-indigo-100 shadow-sm"
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className="font-bold text-slate-900 text-base">{cy.displayName}</h2>
+                      {character && (
+                        <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-full">
+                          {character.characterName}
+                        </span>
+                      )}
                       <StatusBadge
                         status={cy.ilmEnabled ? 'ilm' : 'no_ilm'}
                         label={cy.ilmEnabled ? 'ILM Active' : 'Non-ILM'}

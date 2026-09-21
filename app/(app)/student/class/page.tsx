@@ -11,6 +11,8 @@ import {
 } from '@/lib/mock-data/students';
 import { classYears } from '@/lib/mock-data/cohorts';
 import { StudentAvatar } from '@/components/ui/student-avatar';
+import { ClassAvatar } from '@/components/ui/class-avatar';
+import { getClassCharacter } from '@/lib/mock-data/class-characters';
 import {
   WhatsAppPhotoModal,
   PhotoModalData,
@@ -91,6 +93,7 @@ export default function StudentClassPage() {
   });
 
   const selectedClassObj = classOptions.find(c => c.id === selectedClassId);
+  const selectedClassCharacter = getClassCharacter(selectedClassObj?.name);
   const isMyClassSelected = selectedClassObj?.isMyClass || selectedClassObj?.name === currentClassName;
 
   const openWhatsAppPhoto = (s: typeof targetStudents[0]) => {
@@ -112,17 +115,34 @@ export default function StudentClassPage() {
         <div className="absolute bottom-0 left-1/3 -mb-8 w-40 h-40 rounded-full bg-blue-500/10 blur-xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-indigo-200 mb-3">
-              <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
-              Academic Year 2026–27 · MDIA Academy
+          <div className="flex items-center gap-4">
+            {selectedClassId !== 'all' && (
+              <ClassAvatar
+                name={selectedClassObj?.name}
+                level={selectedClassObj?.num}
+                size="2xl"
+                className="w-16 h-16 sm:w-20 sm:h-20 ring-4 ring-white/20 shadow-lg flex-shrink-0"
+              />
+            )}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-indigo-200 mb-2">
+                <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
+                Academic Year 2026–27 · MDIA Academy
+              </div>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  {isMyClassSelected ? `My Class — ${selectedClassObj?.name}` : selectedClassId === 'all' ? 'All Classes Student Directory' : `Class — ${selectedClassObj?.name}`}
+                </h1>
+                {selectedClassCharacter && (
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30 backdrop-blur-md">
+                    {selectedClassCharacter.characterName}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+                {targetStudents.length} enrolled students. Click any student&apos;s photo to view their high-resolution photo and profile details.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              {isMyClassSelected ? `My Class — ${selectedClassObj?.name}` : selectedClassId === 'all' ? 'All Classes Student Directory' : `Class — ${selectedClassObj?.name}`}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
-              {targetStudents.length} enrolled students. Click any student&apos;s photo to view their high-resolution photo and profile details.
-            </p>
           </div>
 
           <div className="flex items-center gap-3 self-start md:self-auto bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/15">
@@ -155,12 +175,21 @@ export default function StudentClassPage() {
                 key={c.id}
                 onClick={() => setSelectedClassId(c.id)}
                 className={cn(
-                  'px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 border shadow-2xs',
+                  'px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 border shadow-2xs',
                   isSelected
                     ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
                     : 'bg-white text-slate-700 border-gray-200 hover:bg-slate-50 hover:border-gray-300'
                 )}
               >
+                {c.id !== 'all' && (
+                  <ClassAvatar
+                    name={c.name}
+                    level={c.num}
+                    size="xs"
+                    showBorder={false}
+                    className="w-5 h-5"
+                  />
+                )}
                 <span>{c.name}</span>
                 {c.isMyClass && (
                   <span className={cn(
