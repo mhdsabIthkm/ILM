@@ -33,6 +33,7 @@ export default function StudentProfilePage() {
   const className = user.className ?? cy?.displayName ?? student?.className ?? 'VAHDA';
   const studentName = user.studentName || student?.name || (user.admissionNo ? `Student #${user.admissionNo}` : 'Student');
   const admissionNo = user.admissionNo || student?.admissionNo || '';
+  const fatherName = student?.fatherName || user.fatherName;
 
   // Direct reactive photo url: priority to user context photo, then local /students/<admissionNo>.jpg
   const photoUrl = user.photoUrl || (admissionNo ? `/students/${admissionNo}.jpg` : null);

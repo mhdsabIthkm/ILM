@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { UserProvider } from '@/context/UserContext';
+import { UserProvider, LoggedInUser } from '@/context/UserContext';
+import { cookies } from 'next/headers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,15 +16,24 @@ export const metadata: Metadata = {
   keywords: ['ILM', 'Islamic Academy', 'Toastmasters', 'Speech Evaluation', 'Meeting Management'],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let initialUser: LoggedInUser | null = null;
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('ilm_session')?.value;
+    if (sessionCookie) {
+      initialUser = JSON.parse(decodeURIComponent(sessionCookie));
+    }
+  } catch {}
+
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <UserProvider>
+        <UserProvider initialUser={initialUser}>
           {children}
         </UserProvider>
       </body>

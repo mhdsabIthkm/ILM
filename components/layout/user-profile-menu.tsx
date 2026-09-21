@@ -94,19 +94,21 @@ export function UserProfileMenu() {
 
   const displayUserName =
     effectiveRole === 'student'
-      ? (user.studentName || (user.admissionNo ? `Student #${user.admissionNo}` : 'Student'))
+      ? (user.studentName || (user.admissionNo ? `Student #${user.admissionNo}` : ''))
       : effectiveRole === 'parent'
       ? (user.childName ? `Parent of ${user.childName}` : 'Parent')
       : (user.adminName || 'Ustadh Abdullah');
 
   // Initials for avatar fallback
   const initials = displayUserName
-    .split(' ')
-    .map(p => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase() || 'U';
+    ? displayUserName
+        .split(' ')
+        .map(p => p[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'U';
 
   const adminEmail = user.adminEmail || 'kunjonkunjon@ilm.org';
   const adminPhoto = user.adminPhotoUrl || '/avatars/admin.jpg';
@@ -368,16 +370,7 @@ export function UserProfileMenu() {
             )}
           </div>
 
-          {/* Footer with Clear Logout Button */}
-          <div className="p-2 border-t border-gray-100 bg-slate-50/50">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors border border-transparent hover:border-red-200"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out of Account</span>
-            </button>
-          </div>
+
         </div>
       )}
 

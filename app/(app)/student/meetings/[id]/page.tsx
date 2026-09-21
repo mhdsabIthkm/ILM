@@ -202,7 +202,7 @@ export default function StudentMeetingViewPage() {
                         <div className="text-right flex-shrink-0">
                           <span className="inline-flex items-center gap-1 text-xs font-extrabold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
                             <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                            {evalData.marks}/10
+                            Evaluated
                           </span>
                         </div>
                       )}
@@ -304,7 +304,7 @@ export default function StudentMeetingViewPage() {
 
             <div className="space-y-2.5">
               {vahdaMeeting1Awards.map(a => {
-                const s = getStudent(a.studentId);
+                const s = a.studentId ? getStudent(a.studentId) : null;
                 return (
                   <div key={a.id} className="p-3 bg-white rounded-xl border border-amber-200 flex items-center gap-3 shadow-2xs">
                     <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0">

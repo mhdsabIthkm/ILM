@@ -287,15 +287,20 @@ export async function loginParentDetailedAsync(childAdmissionNo: string): Promis
 }
 
 function getUserLabel(u: LoggedInUser): string {
-  if (u.role === 'student') return u.studentName ?? 'Student';
-  if (u.role === 'parent') return `Parent of ${u.childName ?? 'Student'}`;
-  return u.adminName ?? 'Admin';
+  if (u.role === 'student') return u.studentName ?? (u.admissionNo ? `Student #${u.admissionNo}` : '');
+  if (u.role === 'parent') return u.childName ? `Parent of ${u.childName}` : 'Parent';
+  return u.adminName ?? 'Admin Staff';
 }
 
 function getSavedUser(): LoggedInUser | null {
   if (typeof window === 'undefined') return null;
   try {
-    const saved = localStorage.getItem('ilm-user');
+    // Remove any legacy persistent localStorage login so browser restart requires sign-in
+    try {
+      localStorage.removeItem('ilm-user');
+    } catch {}
+
+    const saved = sessionStorage.getItem('ilm-user');
     if (saved) {
       const parsed = JSON.parse(saved) as LoggedInUser;
       if (['admin', 'student', 'parent'].includes(parsed.role)) {
@@ -310,9 +315,15 @@ export const GUEST_USER: LoggedInUser = {
   role: 'student',
 };
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
+export function UserProvider({
+  children,
+  initialUser = null,
+}: {
+  children: React.ReactNode;
+  initialUser?: LoggedInUser | null;
+}) {
   const [user, setUserState] = useState<LoggedInUser>(() => {
-    return getSavedUser() ?? GUEST_USER;
+    return initialUser ?? getSavedUser() ?? GUEST_USER;
   });
 
   useEffect(() => {
@@ -325,15 +336,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const setUser = (u: LoggedInUser) => {
     setUserState(u);
     try {
-      localStorage.setItem('ilm-user', JSON.stringify(u));
-      document.cookie = `ilm_role=${u.role}; path=/; max-age=31536000; SameSite=Lax`;
+      // 1. Save in sessionStorage (persists across refresh & mobile minimize, clears when tab/browser closes)
+      sessionStorage.setItem('ilm-user', JSON.stringify(u));
+      localStorage.removeItem('ilm-user');
+
+      // 2. Save in true session cookie (no max-age / expires, dies on browser close, sent during SSR refresh)
+      document.cookie = `ilm_session=${encodeURIComponent(JSON.stringify(u))}; path=/; SameSite=Lax`;
+      document.cookie = `ilm_role=${u.role}; path=/; SameSite=Lax`;
     } catch {}
   };
 
   const logout = () => {
     setUserState(GUEST_USER);
     try {
+      sessionStorage.removeItem('ilm-user');
       localStorage.removeItem('ilm-user');
+      document.cookie = 'ilm_session=; path=/; max-age=0; SameSite=Lax';
       document.cookie = 'ilm_role=; path=/; max-age=0; SameSite=Lax';
     } catch {}
   };

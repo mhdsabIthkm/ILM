@@ -199,7 +199,7 @@ export function AppSidebar({ onClose }: AppSidebarProps) {
   const displayClassName = user.className || (effectiveRole === 'student' && user.admissionNo ? 'VAHDA' : undefined);
   const displayUserName =
     effectiveRole === 'student'
-      ? (user.studentName || (user.admissionNo ? `Student #${user.admissionNo}` : 'Student'))
+      ? (user.studentName || (user.admissionNo ? `Student #${user.admissionNo}` : ''))
       : effectiveRole === 'parent'
       ? (user.childName ? `Parent of ${user.childName}` : 'Parent')
       : (user.adminName || 'Ustadh Abdullah');
@@ -214,12 +214,14 @@ export function AppSidebar({ onClose }: AppSidebarProps) {
   }, [userPhoto]);
 
   const initials = displayUserName
-    .split(' ')
-    .map(p => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase() || 'U';
+    ? displayUserName
+        .split(' ')
+        .map(p => p[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+    : 'U';
 
   return (
     <>
@@ -351,13 +353,15 @@ export function AppSidebar({ onClose }: AppSidebarProps) {
                 </Link>
 
                 <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                  <span className="text-[10px] font-bold text-indigo-300 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-700/50">
-                    {effectiveRole === 'admin'
-                      ? 'Admin Staff'
-                      : effectiveRole === 'student'
-                      ? `Class: ${displayClassName}`
-                      : 'Parent'}
-                  </span>
+                  {(displayClassName || effectiveRole === 'admin') && (
+                    <span className="text-[10px] font-bold text-indigo-300 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-700/50">
+                      {effectiveRole === 'admin'
+                        ? 'Admin Staff'
+                        : effectiveRole === 'student'
+                        ? `Class: ${displayClassName}`
+                        : 'Parent'}
+                    </span>
+                  )}
                   {displayAdmissionNo && (
                     <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-600/30">
                       #{displayAdmissionNo}

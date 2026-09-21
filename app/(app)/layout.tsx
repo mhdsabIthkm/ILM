@@ -4,23 +4,48 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { TopHeader } from '@/components/layout/top-header';
-import { cn } from '@/lib/utils';
+import { useUser } from '@/context/UserContext';
 import { X } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('ilm-user');
+        const sessionUser = sessionStorage.getItem('ilm-user');
+        return !!sessionUser;
+      } catch {
+        return false;
+      }
+    }
+    return !!(user.admissionNo || user.adminName || user.childAdmissionNo);
+  });
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('ilm-user');
-      if (!saved) {
-        // Not logged in -> always route to /login as first interface
+      localStorage.removeItem('ilm-user');
+      const sessionUser = sessionStorage.getItem('ilm-user');
+      const hasAuth = !!sessionUser || !!(user.admissionNo || user.adminName || user.childAdmissionNo);
+      if (!hasAuth) {
+        setIsAuthenticated(false);
         router.replace('/login');
+      } else {
+        setIsAuthenticated(true);
       }
-    } catch {}
-  }, [router, pathname]);
+    } catch {
+      setIsAuthenticated(false);
+      router.replace('/login');
+    }
+  }, [router, pathname, user]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-950">
