@@ -163,7 +163,7 @@ export default function LoginPage() {
       {/* ── FIXED FOREGROUND: Header, Content, & Login Form ── */}
       {/* Moves DOWN (translateY increases) and fades to 0 as user scrolls */}
       <div
-        className="fixed inset-0 w-full h-screen z-10 flex flex-col justify-between overflow-y-auto lg:overflow-hidden px-4 sm:px-8 lg:px-12 py-5 sm:py-6"
+        className="fixed inset-0 w-full h-screen z-10 flex flex-col justify-between overflow-y-auto px-4 sm:px-8 lg:px-12 py-5 sm:py-6"
         style={{
           transform: `translate3d(0, ${progress * 300}px, 0)`,
           opacity: Math.max(0, 1 - Math.pow(progress, 1.15)),
@@ -386,15 +386,23 @@ export default function LoginPage() {
                   </button>
                 </form>
 
-                {/* Staff / Evaluator link */}
-                <div className="mt-4 pt-3.5 border-t border-white/10 text-center relative z-10">
+                {/* Staff / Evaluator link and Scroll Down Option */}
+                <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between gap-2 relative z-10 flex-wrap">
                   <Link
                     href="/admin-login"
                     className="inline-flex items-center justify-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
                   >
                     <Shield className="w-3.5 h-3.5 text-white/80" />
-                    Ustadh &amp; Evaluator Login Portal →
+                    Ustadh Login →
                   </Link>
+                  <button
+                    type="button"
+                    onClick={scrollToRevealPhoto}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber-300 hover:text-amber-200 transition-colors cursor-pointer group"
+                  >
+                    <span>Scroll down to photo</span>
+                    <ChevronDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
+                  </button>
                 </div>
               </div>
             </div>

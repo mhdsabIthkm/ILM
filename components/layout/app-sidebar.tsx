@@ -59,11 +59,27 @@ const studentNav: NavItem[] = [
   { label: 'Dashboard', href: '/student', icon: LayoutDashboard },
   { label: 'My Profile', href: '/student/profile', icon: UserCircle },
   { label: 'My Class', href: '/student/class', icon: GraduationCap },
-  { label: 'ILM Meetings', href: '/student/meetings', icon: Calendar },
+  {
+    label: 'ILM Meetings',
+    icon: Calendar,
+    children: [
+      { label: 'Meetings', href: '/student/meetings', icon: Calendar },
+      { label: 'Classes & Directory', href: '/student/class', icon: School },
+      { label: 'My Roles', href: '/student/roles', icon: Layers },
+      { label: 'My Evaluations', href: '/student/evaluations', icon: Star },
+    ],
+  },
   { label: 'My Roles', href: '/student/roles', icon: Layers },
   { label: 'My Evaluations', href: '/student/evaluations', icon: Star },
   { label: 'Awards', href: '/student/awards', icon: Award },
-  { label: 'Reports', href: '/student/reports', icon: FileText },
+  {
+    label: 'Reports',
+    icon: FileText,
+    children: [
+      { label: 'Meeting Reports', href: '/student/reports', icon: FileText },
+      { label: 'Awards & Honors', href: '/student/awards', icon: Award },
+    ],
+  },
   { label: 'Photos', href: '/student/photos', icon: Image },
 ];
 
@@ -98,7 +114,7 @@ function NavItemComponent({ item, depth = 0 }: NavItemProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(() => {
     if (!item.children) return false;
-    if (item.label === 'ILM Meetings') return true;
+    if (item.label === 'ILM Meetings' || item.label === 'Reports') return true;
     return item.children.some(c => c.href && pathname.startsWith(c.href));
   });
 

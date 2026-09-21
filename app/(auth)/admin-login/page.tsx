@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { BookMarked, Shield, Eye, EyeOff, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
+import { CampusPhotoModal } from '@/components/ui/campus-photo-modal';
 
 const ADMIN_PASSWORD = 'kunjonkunjon';
 
@@ -15,6 +16,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [isCampusModalOpen, setIsCampusModalOpen] = useState(false);
   const { setUser } = useUser();
   const router = useRouter();
 
@@ -176,11 +178,25 @@ export default function AdminLoginPage() {
         </form>
       </div>
 
-      <div className="mt-5 text-center">
-        <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">
+      <div className="mt-5 flex items-center justify-between text-xs text-slate-400">
+        <Link href="/login" className="hover:text-white transition-colors">
           ← Back to student / parent login
         </Link>
+        <button
+          type="button"
+          onClick={() => setIsCampusModalOpen(true)}
+          className="inline-flex items-center gap-1.5 text-amber-300 hover:text-amber-200 transition-colors cursor-pointer"
+        >
+          <Eye className="w-3.5 h-3.5" />
+          <span>View Campus</span>
+        </button>
       </div>
+
+      {/* Fullscreen Campus Lightbox Modal */}
+      <CampusPhotoModal
+        isOpen={isCampusModalOpen}
+        onClose={() => setIsCampusModalOpen(false)}
+      />
     </div>
   </div>
 );
