@@ -5,14 +5,13 @@ import Link from 'next/link';
 import { useUser } from '@/context/UserContext';
 import {
   allStudents,
-  getStudentsByClassNum,
-  vahdaStudents,
   findStudentByAdmissionNo,
 } from '@/lib/mock-data/students';
 import { classYears } from '@/lib/mock-data/cohorts';
 import { StudentAvatar } from '@/components/ui/student-avatar';
 import { ClassAvatar } from '@/components/ui/class-avatar';
 import { getClassCharacter } from '@/lib/mock-data/class-characters';
+import { getClassDetailInfo } from '@/lib/mock-data/class-details';
 import {
   WhatsAppPhotoModal,
   PhotoModalData,
@@ -24,184 +23,146 @@ import {
   LayoutGrid,
   List,
   Sparkles,
-  ShieldCheck,
   Eye,
-  CheckCircle2,
-  ArrowRight,
+  Award,
+  Calendar,
+  Star,
+  BookOpen,
   ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const CLASS_OPTIONS = [
-  { id: 'cy-vahda-2627', name: 'VAHDA', num: 4 },
-  { id: 'cy-sada-2627', name: "SA'DA", num: 1 },
-  { id: 'cy-sidra-2627', name: 'SIDRA', num: 2 },
-  { id: 'cy-suffa-2627', name: 'SUFFA', num: 3 },
-  { id: 'cy-class5-2627', name: 'HUDA', num: 5 },
-  { id: 'cy-alfa-2627', name: 'ALFA', num: 6 },
-  { id: 'cy-class7-2627', name: 'SAFWA', num: 7 },
-  { id: 'cy-degree1-2627', name: 'THUFA', num: 8 },
-  { id: 'cy-degree2-2627', name: 'NAJWA', num: 9 },
-  { id: 'cy-degree3-2627', name: 'WIDAD', num: 10 },
-  { id: 'all', name: 'All Classes', num: 0 },
-];
-
 export default function StudentClassPage() {
   const { user } = useUser();
-  const [selectedClassId, setSelectedClassId] = useState('cy-vahda-2627');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activePhotoModal, setActivePhotoModal] = useState<PhotoModalData | null>(null);
 
-  // Find current student record
+  // Find current student record & determine their official class
   const currentStudent = user.admissionNo
     ? findStudentByAdmissionNo(user.admissionNo)
     : null;
 
   const currentClassName = currentStudent?.className ?? user.className ?? 'VAHDA';
+  
+  const myClassObj =
+    classYears.find(
+      c => c.displayName.toUpperCase() === currentClassName.toUpperCase() && c.academicYearId === 'ay-2026-27'
+    ) ||
+    classYears.find(c => c.id === currentStudent?.classYearId) ||
+    classYears[3]; // Fallback to VAHDA
 
-  const classOptions = CLASS_OPTIONS.map(c => ({
-    ...c,
-    isMyClass: c.name.toLowerCase() === currentClassName.toLowerCase(),
-  }));
+  // The student's "My Class" interface strictly shows their own class only
+  const classStudents = allStudents.filter(
+    s => s.classYearId === myClassObj.id || s.className?.toUpperCase() === myClassObj.displayName.toUpperCase()
+  );
 
-  // Determine which students to show
-  let targetStudents = allStudents;
-  if (selectedClassId !== 'all') {
-    const selectedOption = classOptions.find(c => c.id === selectedClassId);
-    if (selectedOption?.num === 4 || selectedOption?.name === 'VAHDA') {
-      targetStudents = vahdaStudents;
-    } else if (selectedOption && selectedOption.num > 0) {
-      targetStudents = getStudentsByClassNum(selectedOption.num);
-      if (targetStudents.length === 0) {
-        targetStudents = allStudents.filter(s => s.classYearId === selectedClassId || s.className === selectedOption.name);
-      }
-    } else {
-      targetStudents = allStudents.filter(s => s.classYearId === selectedClassId);
-    }
-  }
+  const character = getClassCharacter(myClassObj.displayName);
+  const detailInfo = getClassDetailInfo(myClassObj.id);
 
-  // Filter students by search query
-  const filteredStudents = targetStudents.filter(s => {
+  // Filter classmates by search query
+  const filteredStudents = classStudents.filter(s => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase().trim();
     return (
       s.name.toLowerCase().includes(query) ||
-      s.admissionNo.includes(query) ||
-      (s.className && s.className.toLowerCase().includes(query))
+      s.admissionNo.includes(query)
     );
   });
 
-  const selectedClassObj = classOptions.find(c => c.id === selectedClassId);
-  const selectedClassCharacter = getClassCharacter(selectedClassObj?.name);
-  const isMyClassSelected = selectedClassObj?.isMyClass || selectedClassObj?.name === currentClassName;
-
-  const openWhatsAppPhoto = (s: typeof targetStudents[0]) => {
+  const openWhatsAppPhoto = (s: typeof classStudents[0]) => {
     setActivePhotoModal({
       name: s.name,
       admissionNo: s.admissionNo,
-      className: s.className || selectedClassObj?.name || currentClassName,
+      className: myClassObj.displayName,
       photoUrl: s.avatarUrl || `/students/${s.admissionNo}.jpg`,
       studentId: s.id,
     });
   };
 
+  const getRole = (studentId: string) => {
+    if (detailInfo?.rolesByStudentId[studentId]) {
+      return detailInfo.rolesByStudentId[studentId];
+    }
+    return `Class ${myClassObj.displayName} Scholar`;
+  };
+
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-6">
-      {/* Top Hero Banner */}
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-6 pb-12">
+      {/* Top Hero Banner — Strictly for the Logged-in Student's Class */}
       <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        {/* Subtle decorative background circles */}
+        {/* Decorative background blurs */}
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-8 w-40 h-40 rounded-full bg-blue-500/10 blur-xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {selectedClassId !== 'all' && (
-              <ClassAvatar
-                name={selectedClassObj?.name}
-                level={selectedClassObj?.num}
-                size="2xl"
-                className="w-16 h-16 sm:w-20 sm:h-20 ring-4 ring-white/20 shadow-lg flex-shrink-0"
-              />
-            )}
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4 sm:gap-5">
+            {/* Mascot Character Avatar with Centered Face */}
+            <ClassAvatar
+              name={myClassObj.displayName}
+              level={myClassObj.level}
+              size="2xl"
+              className="w-18 h-18 sm:w-22 sm:h-22 ring-4 ring-white/25 shadow-xl flex-shrink-0"
+            />
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-indigo-200 mb-2">
                 <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
-                Academic Year 2026–27 · MDIA Academy
+                Academic Year 2026–27 · Your Official Class
               </div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                  {isMyClassSelected ? `My Class — ${selectedClassObj?.name}` : selectedClassId === 'all' ? 'All Classes Student Directory' : `Class — ${selectedClassObj?.name}`}
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                  My Class — {myClassObj.displayName}
                 </h1>
-                {selectedClassCharacter && (
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30 backdrop-blur-md">
-                    {selectedClassCharacter.characterName}
+                {character && (
+                  <span className="text-xs font-bold px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30 backdrop-blur-md flex items-center gap-1">
+                    <span>Mascot:</span>
+                    <span>{character.characterName}</span>
                   </span>
                 )}
               </div>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
-                {targetStudents.length} enrolled students. Click any student&apos;s photo to view their high-resolution photo and profile details.
+                {detailInfo?.focusDescription || `You are enrolled in Class ${myClassObj.displayName} with ${classStudents.length} classmates.`}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-auto bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/15">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/60 flex items-center justify-center text-white">
+          <div className="flex items-center gap-3 self-start md:self-auto bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600/70 flex items-center justify-center text-white">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-lg font-black leading-none">{targetStudents.length}</p>
-              <p className="text-[10px] text-slate-300 uppercase tracking-wider font-semibold mt-0.5">
-                Students
+              <p className="text-xl font-black leading-none">{classStudents.length}</p>
+              <p className="text-[10px] text-slate-300 uppercase tracking-wider font-extrabold mt-0.5">
+                Classmates
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Class Selector Switcher - Easily switch to other classes or all students */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-500 px-1">
-          <span>SELECT CLASS TO VIEW STUDENTS &amp; PHOTOS:</span>
-          <Link href="/student/meetings" className="text-indigo-600 hover:underline">
-            View ILM Meetings →
-          </Link>
+      {/* Class Metric Highlights */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+        <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Class Level</p>
+          <p className="text-lg font-black text-slate-900 mt-0.5">Level {myClassObj.level}</p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{myClassObj.displayName} Batch</p>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {classOptions.map(c => {
-            const isSelected = selectedClassId === c.id;
-            return (
-              <button
-                key={c.id}
-                onClick={() => setSelectedClassId(c.id)}
-                className={cn(
-                  'px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 border shadow-2xs',
-                  isSelected
-                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                    : 'bg-white text-slate-700 border-gray-200 hover:bg-slate-50 hover:border-gray-300'
-                )}
-              >
-                {c.id !== 'all' && (
-                  <ClassAvatar
-                    name={c.name}
-                    level={c.num}
-                    size="xs"
-                    showBorder={false}
-                    className="w-5 h-5"
-                  />
-                )}
-                <span>{c.name}</span>
-                {c.isMyClass && (
-                  <span className={cn(
-                    'text-[9px] px-1.5 py-0.2 rounded-full uppercase tracking-wider font-extrabold',
-                    isSelected ? 'bg-indigo-700 text-indigo-100' : 'bg-indigo-100 text-indigo-700'
-                  )}>
-                    My Class
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Attendance</p>
+          <p className="text-lg font-black text-emerald-700 mt-0.5">{detailInfo?.attendanceRate || '95%'}</p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Cohort Average</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Presentations</p>
+          <p className="text-lg font-black text-indigo-700 mt-0.5">{detailInfo?.totalStageAppearances || 35}</p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Total Sessions</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Cohort Status</p>
+          <p className="text-lg font-black text-slate-900 mt-0.5">
+            {myClassObj.ilmEnabled ? 'ILM Active' : 'Degree Cohort'}
+          </p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">MDIA Academy</p>
         </div>
       </div>
 
@@ -214,13 +175,13 @@ export default function StudentClassPage() {
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder={`Search ${targetStudents.length} students by name, admission #, or class...`}
+            placeholder={`Search ${classStudents.length} classmates in ${myClassObj.displayName} by name or admission #...`}
             className="w-full pl-9 pr-4 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold"
             >
               Clear
             </button>
@@ -250,7 +211,7 @@ export default function StudentClassPage() {
                 ? 'bg-white text-indigo-700 shadow-2xs font-bold'
                 : 'text-slate-500 hover:text-slate-800'
             )}
-            title="List roster view"
+            title="Compact table view"
           >
             <List className="w-3.5 h-3.5" />
             <span>Roster</span>
@@ -258,21 +219,12 @@ export default function StudentClassPage() {
         </div>
       </div>
 
-      {/* Student Count / Results Notice */}
-      <div className="flex items-center justify-between text-xs text-slate-500 px-1">
-        <span>
-          Showing <strong>{filteredStudents.length}</strong> of {targetStudents.length} students
-        </span>
-        <span className="text-[11px] text-slate-400 hidden sm:inline">
-          Tip: Click any student photo to preview full image
-        </span>
-      </div>
-
-      {/* GRID VIEW: Visual ID Cards with Prominent Photos */}
+      {/* Classmates Cards Grid View */}
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {filteredStudents.map((s, idx) => {
-            const isMe = user.admissionNo === s.admissionNo || user.studentId === s.id;
+            const role = getRole(s.id);
+            const isMe = s.admissionNo === user.admissionNo;
 
             return (
               <div
@@ -281,16 +233,14 @@ export default function StudentClassPage() {
                 className={cn(
                   'group bg-white rounded-2xl border p-4 shadow-xs hover:shadow-md transition-all cursor-pointer relative flex items-center gap-3.5 overflow-hidden',
                   isMe
-                    ? 'border-indigo-300 ring-2 ring-indigo-500/20 bg-indigo-50/20'
+                    ? 'border-indigo-400 ring-2 ring-indigo-100 bg-indigo-50/20'
                     : 'border-gray-200 hover:border-indigo-300'
                 )}
               >
-                {/* Roll index indicator */}
-                <span className="text-[10px] font-mono font-bold text-slate-300 group-hover:text-indigo-400 transition-colors absolute top-2 right-3">
+                <span className="text-[10px] font-mono font-bold text-slate-300 group-hover:text-indigo-400 transition-colors absolute top-2.5 right-3">
                   #{idx + 1}
                 </span>
 
-                {/* Avatar with click-to-preview WhatsApp style */}
                 <div className="relative flex-shrink-0">
                   <StudentAvatar
                     name={s.name}
@@ -303,33 +253,32 @@ export default function StudentClassPage() {
                   </div>
                 </div>
 
-                {/* Info */}
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 truncate transition-colors leading-tight">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 truncate transition-colors leading-snug">
                       {s.name}
                     </h3>
                     {isMe && (
-                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-indigo-600 text-white flex-shrink-0 shadow-2xs">
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider bg-indigo-600 text-white px-1.5 py-0.2 rounded-full">
                         You
                       </span>
                     )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                    <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                    <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200">
                       Adm #{s.admissionNo}
                     </span>
-                    {s.className && (
-                      <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">
-                        {s.className}
-                      </span>
-                    )}
                   </div>
 
-                  <p className="text-[10px] text-indigo-600 font-semibold mt-1.5 flex items-center gap-1 group-hover:underline">
-                    <Eye className="w-3 h-3" /> View Photo &amp; Details
-                  </p>
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <span className="text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 rounded-md px-2 py-0.5 truncate max-w-[170px]">
+                      {role}
+                    </span>
+                    <span className="text-[10px] text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5 ml-auto flex-shrink-0">
+                      <Eye className="w-3 h-3" /> View Photo
+                    </span>
+                  </div>
                 </div>
               </div>
             );
