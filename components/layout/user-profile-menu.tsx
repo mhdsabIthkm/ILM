@@ -370,7 +370,16 @@ export function UserProfileMenu() {
             )}
           </div>
 
-
+          {/* Footer with Sign Out Button */}
+          <div className="p-2 border-t border-gray-100 bg-slate-50/70">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-colors border border-transparent hover:border-rose-200 cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       )}
 
