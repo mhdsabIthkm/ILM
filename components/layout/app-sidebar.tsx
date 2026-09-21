@@ -59,6 +59,7 @@ const studentNav: NavItem[] = [
   { label: 'Dashboard', href: '/student', icon: LayoutDashboard },
   { label: 'My Profile', href: '/student/profile', icon: UserCircle },
   { label: 'My Class', href: '/student/class', icon: GraduationCap },
+  { label: 'All Classes', href: '/student/classes', icon: School },
   { label: 'ILM Meetings', href: '/student/meetings', icon: Calendar },
   { label: 'My Roles', href: '/student/roles', icon: Layers },
   { label: 'My Evaluations', href: '/student/evaluations', icon: Star },

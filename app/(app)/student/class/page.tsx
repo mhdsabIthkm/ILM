@@ -29,6 +29,7 @@ import {
   Star,
   BookOpen,
   ChevronRight,
+  School,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -126,16 +127,28 @@ export default function StudentClassPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-auto bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 flex-shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/70 flex items-center justify-center text-white">
-              <Users className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 self-start md:self-auto flex-shrink-0">
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15">
+              <div className="w-10 h-10 rounded-xl bg-indigo-600/70 flex items-center justify-center text-white">
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xl font-black leading-none">{classStudents.length}</p>
+                <p className="text-[10px] text-slate-300 uppercase tracking-wider font-extrabold mt-0.5">
+                  Classmates
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xl font-black leading-none">{classStudents.length}</p>
-              <p className="text-[10px] text-slate-300 uppercase tracking-wider font-extrabold mt-0.5">
-                Classmates
-              </p>
-            </div>
+
+            <Link
+              href="/student/classes"
+              className="flex items-center gap-2 px-3.5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-bold text-white transition-all backdrop-blur-md shadow-xs group"
+              title="Explore all 10 academy classes & student directory"
+            >
+              <School className="w-4 h-4 text-amber-300" />
+              <span>All Classes</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </div>
         </div>
       </div>
