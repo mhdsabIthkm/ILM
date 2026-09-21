@@ -59,27 +59,11 @@ const studentNav: NavItem[] = [
   { label: 'Dashboard', href: '/student', icon: LayoutDashboard },
   { label: 'My Profile', href: '/student/profile', icon: UserCircle },
   { label: 'My Class', href: '/student/class', icon: GraduationCap },
-  {
-    label: 'ILM Meetings',
-    icon: Calendar,
-    children: [
-      { label: 'Meetings', href: '/student/meetings', icon: Calendar },
-      { label: 'Classes & Directory', href: '/student/class', icon: School },
-      { label: 'My Roles', href: '/student/roles', icon: Layers },
-      { label: 'My Evaluations', href: '/student/evaluations', icon: Star },
-    ],
-  },
+  { label: 'ILM Meetings', href: '/student/meetings', icon: Calendar },
   { label: 'My Roles', href: '/student/roles', icon: Layers },
   { label: 'My Evaluations', href: '/student/evaluations', icon: Star },
   { label: 'Awards', href: '/student/awards', icon: Award },
-  {
-    label: 'Reports',
-    icon: FileText,
-    children: [
-      { label: 'Meeting Reports', href: '/student/reports', icon: FileText },
-      { label: 'Awards & Honors', href: '/student/awards', icon: Award },
-    ],
-  },
+  { label: 'Reports', href: '/student/reports', icon: FileText },
   { label: 'Photos', href: '/student/photos', icon: Image },
 ];
 
@@ -87,13 +71,8 @@ const parentNav: NavItem[] = [
   { label: 'Dashboard', href: '/parent', icon: LayoutDashboard },
   { label: 'My Child', href: '/parent/my-son', icon: UserCircle },
   { label: 'Progress', href: '/parent/progress', icon: BarChart2 },
-  {
-    label: 'ILM Meetings', icon: Calendar,
-    children: [
-      { label: 'Meetings', href: '/parent/meetings', icon: Calendar },
-      { label: 'Class Reports', href: '/parent/reports', icon: FileText },
-    ],
-  },
+  { label: 'ILM Meetings', href: '/parent/meetings', icon: Calendar },
+  { label: 'Reports', href: '/parent/reports', icon: FileText },
   { label: 'Awards', href: '/parent/awards', icon: Award },
   { label: 'Photos', href: '/parent/photos', icon: Image },
 ];
