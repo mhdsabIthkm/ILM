@@ -75,7 +75,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content - Strictly begins at x=288px, cleanly divided from the dark sidebar */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-gray-50 print:block print:h-auto print:overflow-visible print:bg-white print:m-0 print:p-0">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-slate-100/60 print:block print:h-auto print:overflow-visible print:bg-white print:m-0 print:p-0">
         <div className="print:hidden">
           <TopHeader onMenuClick={() => setSidebarOpen(true)} />
         </div>

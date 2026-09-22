@@ -216,7 +216,7 @@ export default function EnterReportPage() {
       )}
 
       {/* Report Entry Method: Two Rectangles with "OR" in the middle */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6">
         <h2 className="text-sm font-bold text-slate-900 mb-4">
           How would you like to enter this report?
         </h2>
@@ -226,7 +226,7 @@ export default function EnterReportPage() {
           {/* Rectangle 1: Fill Report Manually */}
           <Link
             href={`/admin/meetings/${meetingId}/report/attendance`}
-            className="flex flex-col items-center justify-center gap-3 p-6 border-2 border-indigo-200 rounded-2xl bg-indigo-50/40 hover:bg-indigo-50/80 hover:border-indigo-400 transition-all text-center group shadow-2xs"
+            className="flex flex-col items-center justify-center gap-3 p-6 border-2 border-indigo-200/90 rounded-2xl bg-indigo-50/50 hover:bg-indigo-50/80 hover:border-indigo-400 hover:shadow-md transition-all text-center group shadow-xs"
           >
             <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center group-hover:scale-105 transition-transform">
               <FileText className="w-6 h-6" />
@@ -272,7 +272,7 @@ export default function EnterReportPage() {
               'flex flex-col items-center justify-center gap-3 p-6 border-2 border-dashed rounded-2xl transition-all text-center cursor-pointer relative group',
               isDragging
                 ? 'border-indigo-600 bg-indigo-100/70 ring-4 ring-indigo-500/20 scale-[1.01]'
-                : 'border-slate-300 bg-slate-50/50 hover:border-indigo-400 hover:bg-indigo-50/30'
+                : 'border-slate-300 bg-slate-50/70 hover:border-indigo-400 hover:bg-indigo-50/40 hover:shadow-md shadow-xs'
             )}
           >
             <input
@@ -538,7 +538,7 @@ export default function EnterReportPage() {
       )}
 
       {/* Section status list with Nil / Not Held option */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-sm font-bold text-slate-900">Report Sections</h2>

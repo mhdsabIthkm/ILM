@@ -56,8 +56,8 @@ export default function StudentMeetingViewPage() {
       </Link>
 
       {/* Meeting Header Hero Card */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-7 shadow-xs space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-gray-100">
+      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-lg">
               Class {cy?.displayName ?? 'VAHDA'}
@@ -126,7 +126,7 @@ export default function StudentMeetingViewPage() {
         <div className="lg:col-span-2 space-y-6">
 
           {/* Presiding Officers Card */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-indigo-600" />
               Meeting Leadership &amp; Anchor
@@ -162,8 +162,8 @@ export default function StudentMeetingViewPage() {
           </div>
 
           {/* Prepared Speeches Showcase */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Mic className="w-4 h-4 text-indigo-600" />
                 Prepared Speeches &amp; Evaluations
@@ -180,7 +180,7 @@ export default function StudentMeetingViewPage() {
                 const evaluatorStudent = evalData?.evaluatorStudentId ? getStudent(evalData.evaluatorStudentId) : null;
 
                 return (
-                  <div key={sp.id} className="p-4 rounded-xl border border-gray-200 bg-slate-50/40 hover:bg-slate-50 transition-colors space-y-3">
+                  <div key={sp.id} className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/60 hover:bg-slate-50 transition-colors space-y-3 shadow-2xs">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <StudentAvatar name={spStudent?.name ?? 'Speaker'} size="md" />
@@ -209,7 +209,7 @@ export default function StudentMeetingViewPage() {
                     </div>
 
                     {/* Speech Title */}
-                    <div className="bg-white p-3 rounded-lg border border-gray-200">
+                    <div className="bg-white p-3 rounded-lg border border-slate-200/90 shadow-2xs">
                       <p className="text-xs font-bold text-slate-800">
                         {sp.subject?.english || 'Speech Presentation'}
                       </p>
@@ -229,7 +229,7 @@ export default function StudentMeetingViewPage() {
                           </span>
                         </div>
                         {evalData.remarks && (
-                          <p className="text-slate-600 bg-white/80 p-2.5 rounded-lg border border-gray-100 italic">
+                          <p className="text-slate-600 bg-white/80 p-2.5 rounded-lg border border-slate-200/70 italic">
                             &ldquo;{evalData.remarks}&rdquo;
                           </p>
                         )}
@@ -251,8 +251,8 @@ export default function StudentMeetingViewPage() {
           </div>
 
           {/* Table Topics (Impromptu Speeches) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 Table Topics (Impromptu Session)
@@ -270,7 +270,7 @@ export default function StudentMeetingViewPage() {
                 const englishTopic = typeof tt.topic === 'string' ? tt.topic : tt.topic?.english || 'Impromptu Topic';
                 const malayalamTopic = typeof tt.topic === 'object' ? tt.topic?.malayalam : null;
                 return (
-                  <div key={tt.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
+                  <div key={tt.id} className="p-3 bg-slate-50/70 rounded-xl border border-slate-200/90 flex items-center justify-between gap-3 text-xs shadow-2xs">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <StudentAvatar name={s?.name ?? 'Speaker'} size="sm" />
                       <div className="min-w-0">
@@ -281,7 +281,7 @@ export default function StudentMeetingViewPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="px-2 py-0.5 rounded font-mono text-[11px] font-semibold bg-white border border-gray-200 flex-shrink-0">
+                    <span className="px-2 py-0.5 rounded font-mono text-[11px] font-semibold bg-white border border-slate-200 flex-shrink-0">
                       TT #{idx + 1}
                     </span>
                   </div>
@@ -296,7 +296,7 @@ export default function StudentMeetingViewPage() {
         <div className="space-y-6">
 
           {/* Awards & Commendations Card */}
-          <div className="bg-gradient-to-br from-amber-50/70 to-yellow-50/40 rounded-2xl border border-amber-200 p-5 shadow-xs space-y-4">
+          <div className="bg-gradient-to-br from-amber-50/80 to-yellow-50/50 rounded-2xl border border-amber-200/90 p-5 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-amber-950 flex items-center gap-2">
               <Award className="w-4 h-4 text-amber-600" />
               Session Honors &amp; Awards
@@ -325,7 +325,7 @@ export default function StudentMeetingViewPage() {
           </div>
 
           {/* Grammarian's Report */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-3.5">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-sm space-y-3.5">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-900">Grammarian Report</h3>
               {grammarian && (
@@ -350,7 +350,7 @@ export default function StudentMeetingViewPage() {
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Noted Language Corrections</p>
               <div className="space-y-1.5 text-xs">
                 {vahdaMeeting1GrammarianReport.observations.map(obs => (
-                  <div key={obs.id} className="p-2.5 bg-slate-50 rounded-lg border border-slate-100 space-y-1">
+                  <div key={obs.id} className="p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 space-y-1 shadow-2xs">
                     <p className="text-red-700 line-through text-[11px]">&ldquo;{obs.whatWasSaid}&rdquo;</p>
                     <p className="text-emerald-700 font-semibold text-[11px]">→ &ldquo;{obs.suggestedCorrection}&rdquo;</p>
                     {obs.note && <p className="text-[10px] text-slate-400">Note: {obs.note}</p>}
@@ -361,7 +361,7 @@ export default function StudentMeetingViewPage() {
           </div>
 
           {/* Official Verification Box */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 text-xs text-slate-500 space-y-2">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 text-xs text-slate-600 space-y-2 shadow-sm">
             <div className="flex items-center gap-2 text-slate-800 font-bold">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>Record Lock &amp; Verification</span>

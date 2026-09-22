@@ -36,10 +36,10 @@ export default function MeetingsPage() {
   const renderMeetingCard = (m: typeof allMeetings[0], isMyClass: boolean) => (
     <div
       key={m.id}
-      className={`bg-white rounded-xl border transition-all ${
+      className={`bg-white rounded-2xl border transition-all ${
         isMyClass
-          ? 'border-indigo-200/90 shadow-xs hover:border-indigo-400 hover:shadow-md'
-          : 'border-gray-200 shadow-xs hover:shadow-md'
+          ? 'border-indigo-300 shadow-sm hover:border-indigo-500 hover:shadow-md'
+          : 'border-slate-200/90 shadow-sm hover:border-indigo-300 hover:shadow-md'
       }`}
     >
       <div className="p-4 flex items-center gap-4">
@@ -113,7 +113,7 @@ export default function MeetingsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-2xs flex flex-wrap gap-3 items-center justify-between">
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm flex flex-wrap gap-3 items-center justify-between">
         <div className="flex flex-wrap gap-3 items-center">
           <select
             value={filterClass}

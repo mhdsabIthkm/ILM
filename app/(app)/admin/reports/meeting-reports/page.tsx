@@ -18,7 +18,7 @@ export default function MeetingReportsPage() {
       </div>
       <div className="space-y-3">
         {allMeetings.map(m => (
-          <div key={m.id} className="bg-white rounded-lg border border-gray-200 p-4 flex items-center gap-4">
+          <div key={m.id} className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all p-4 sm:p-5 flex items-center gap-4">
             <FileText className="w-5 h-5 text-slate-400 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-slate-900">{classMap[m.classYearId]} · Meeting #{m.meetingNumber}</p>
