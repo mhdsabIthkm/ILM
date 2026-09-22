@@ -32,6 +32,7 @@ import {
   School,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LEVEL_CLASS_NAMES } from '@/app/(app)/student/classes/page';
 
 export default function StudentClassPage() {
   const { user } = useUser();
@@ -81,13 +82,6 @@ export default function StudentClassPage() {
     });
   };
 
-  const getRole = (studentId: string) => {
-    if (detailInfo?.rolesByStudentId[studentId]) {
-      return detailInfo.rolesByStudentId[studentId];
-    }
-    return `Class ${myClassObj.displayName} Scholar`;
-  };
-
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-6 pb-12">
       {/* Top Hero Banner — Strictly for the Logged-in Student's Class */}
@@ -121,9 +115,26 @@ export default function StudentClassPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
-                {detailInfo?.focusDescription || `You are enrolled in Class ${myClassObj.displayName} with ${classStudents.length} classmates.`}
-              </p>
+              {!myClassObj.ilmEnabled ? (
+                <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl border border-white/20">
+                    <School className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{LEVEL_CLASS_NAMES[myClassObj.level] || `Class ${myClassObj.level}`} · Academic Year 2026–27</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/40 backdrop-blur-md px-3 py-1 rounded-xl border border-emerald-400/30">
+                    <Users className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{classStudents.length} Enrolled Scholars</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-200 bg-indigo-900/40 backdrop-blur-md px-3 py-1 rounded-xl border border-indigo-400/30">
+                    <GraduationCap className="w-3.5 h-3.5 text-indigo-300" />
+                    <span>{myClassObj.level >= 8 ? 'Degree Stream' : 'Secondary Stream'}</span>
+                  </span>
+                </div>
+              ) : (
+                <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+                  {detailInfo?.focusDescription || `You are enrolled in Class ${myClassObj.displayName} with ${classStudents.length} classmates.`}
+                </p>
+              )}
             </div>
           </div>
 
@@ -157,23 +168,23 @@ export default function StudentClassPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Class Level</p>
-          <p className="text-lg font-black text-slate-900 mt-0.5">Level {myClassObj.level}</p>
+          <p className="text-lg font-black text-slate-900 mt-0.5">{LEVEL_CLASS_NAMES[myClassObj.level] || `Class ${myClassObj.level}`}</p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{myClassObj.displayName} Batch</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Attendance</p>
-          <p className="text-lg font-black text-emerald-700 mt-0.5">{detailInfo?.attendanceRate || '95%'}</p>
-          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Cohort Average</p>
+          <p className="text-lg font-black text-slate-400 mt-0.5">---</p>
+          <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Class Average</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Presentations</p>
-          <p className="text-lg font-black text-indigo-700 mt-0.5">{detailInfo?.totalStageAppearances || 35}</p>
+          <p className="text-lg font-black text-slate-400 mt-0.5">---</p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Total Sessions</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Cohort Status</p>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Class Status</p>
           <p className="text-lg font-black text-slate-900 mt-0.5">
-            {myClassObj.ilmEnabled ? 'ILM Active' : 'Degree Cohort'}
+            {myClassObj.ilmEnabled ? 'ILM Active' : 'Degree Class'}
           </p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">MDIA Academy</p>
         </div>
@@ -233,10 +244,10 @@ export default function StudentClassPage() {
       </div>
 
       {/* Classmates Cards Grid View */}
+      {/* CARDS / GRID VIEW */}
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {filteredStudents.map((s, idx) => {
-            const role = getRole(s.id);
             const isMe = s.admissionNo === user.admissionNo;
 
             return (
@@ -244,54 +255,56 @@ export default function StudentClassPage() {
                 key={s.id}
                 onClick={() => openWhatsAppPhoto(s)}
                 className={cn(
-                  'group bg-white rounded-2xl border p-4 shadow-xs hover:shadow-md transition-all cursor-pointer relative flex items-center gap-3.5 overflow-hidden',
+                  'group bg-white rounded-2xl border p-4 shadow-xs hover:shadow-md transition-all cursor-pointer relative flex items-center justify-between gap-3.5 overflow-hidden',
                   isMe
                     ? 'border-indigo-400 ring-2 ring-indigo-100 bg-indigo-50/20'
                     : 'border-gray-200 hover:border-indigo-300'
                 )}
               >
-                <span className="text-[10px] font-mono font-bold text-slate-300 group-hover:text-indigo-400 transition-colors absolute top-2.5 right-3">
-                  #{idx + 1}
-                </span>
+                <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                  <div className="relative flex-shrink-0">
+                    <StudentAvatar
+                      name={s.name}
+                      admissionNo={s.admissionNo}
+                      size="lg"
+                      className="group-hover:scale-105 group-hover:ring-2 group-hover:ring-indigo-500 transition-all shadow-2xs"
+                    />
+                    <div className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Eye className="w-4 h-4 text-white drop-shadow" />
+                    </div>
+                  </div>
 
-                <div className="relative flex-shrink-0">
-                  <StudentAvatar
-                    name={s.name}
-                    admissionNo={s.admissionNo}
-                    size="lg"
-                    className="group-hover:scale-105 group-hover:ring-2 group-hover:ring-indigo-500 transition-all shadow-2xs"
-                  />
-                  <div className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Eye className="w-4 h-4 text-white drop-shadow" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 truncate transition-colors leading-snug">
+                        {s.name}
+                      </h3>
+                      {isMe && (
+                        <span className="text-[9px] font-extrabold uppercase tracking-wider bg-indigo-600 text-white px-1.5 py-0.2 rounded-full">
+                          You
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span className="text-[11px] font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/80">
+                        #{s.admissionNo}
+                      </span>
+                      <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
+                        Class {myClassObj.displayName} Scholar
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 truncate transition-colors leading-snug">
-                      {s.name}
-                    </h3>
-                    {isMe && (
-                      <span className="text-[9px] font-extrabold uppercase tracking-wider bg-indigo-600 text-white px-1.5 py-0.2 rounded-full">
-                        You
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                    <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200">
-                      Adm #{s.admissionNo}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 mt-2">
-                    <span className="text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 rounded-md px-2 py-0.5 truncate max-w-[170px]">
-                      {role}
-                    </span>
-                    <span className="text-[10px] text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5 ml-auto flex-shrink-0">
-                      <Eye className="w-3 h-3" /> View Photo
-                    </span>
-                  </div>
+                {/* Serial Number Badge & Actions */}
+                <div className="flex flex-col items-end gap-1 flex-shrink-0 pl-1">
+                  <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/80 group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:border-indigo-200 transition-colors shadow-2xs">
+                    #{idx + 1}
+                  </span>
+                  <span className="text-[10px] text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5">
+                    <Eye className="w-3 h-3" /> View
+                  </span>
                 </div>
               </div>
             );
@@ -342,7 +355,7 @@ export default function StudentClassPage() {
                       {s.className && (
                         <>
                           <span>·</span>
-                          <span className="font-semibold text-indigo-700">{s.className}</span>
+                          <span className="font-semibold text-indigo-700">Class {s.className} Scholar</span>
                         </>
                       )}
                     </div>

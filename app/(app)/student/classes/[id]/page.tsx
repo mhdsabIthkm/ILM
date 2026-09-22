@@ -30,8 +30,10 @@ import {
   CheckCircle2,
   Clock,
   School,
+  GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LEVEL_CLASS_NAMES } from '../page';
 
 export default function StudentClassDetailPage() {
   const params = useParams();
@@ -114,7 +116,7 @@ export default function StudentClassDetailPage() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-indigo-200 mb-2">
                 <School className="w-3.5 h-3.5 text-amber-400" />
-                Level {cy.level} · Academic Year 2026–27
+                {LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`} · Academic Year 2026–27
               </div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
@@ -128,13 +130,26 @@ export default function StudentClassDetailPage() {
                 )}
                 <StatusBadge
                   status={cy.ilmEnabled ? 'ilm' : 'no_ilm'}
-                  label={cy.ilmEnabled ? 'ILM Batch' : 'Degree Cohort'}
+                  label={cy.ilmEnabled ? 'ILM Active Class' : (cy.level >= 8 ? 'Academic Degree Program' : 'Secondary Academic Program')}
                   showDot={false}
                 />
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
-                {detailInfo?.focusDescription || `Enrolled batch of ${students.length} scholars at MDIA Academy.`}
-              </p>
+
+              {/* Clean, attractive metadata badges - replacing raw verbose text */}
+              <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl border border-white/20">
+                  <School className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`} · Academic Year 2026–27</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/40 backdrop-blur-md px-3 py-1 rounded-xl border border-emerald-400/30">
+                  <Users className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{students.length} Enrolled Scholars</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-200 bg-indigo-900/40 backdrop-blur-md px-3 py-1 rounded-xl border border-indigo-400/30">
+                  <GraduationCap className="w-3.5 h-3.5 text-indigo-300" />
+                  <span>{cy.level >= 8 ? 'Degree Stream' : 'Secondary Stream'}</span>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -156,17 +171,17 @@ export default function StudentClassDetailPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Class Level</p>
-          <p className="text-lg font-black text-slate-900 mt-0.5">Level {cy.level}</p>
+          <p className="text-lg font-black text-slate-900 mt-0.5">{LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`}</p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">{cy.displayName} Batch</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Attendance</p>
-          <p className="text-lg font-black text-emerald-700 mt-0.5">{detailInfo?.attendanceRate || '96%'}</p>
+          <p className="text-lg font-black text-slate-400 mt-0.5">---</p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Batch Average</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Presentations</p>
-          <p className="text-lg font-black text-indigo-700 mt-0.5">{detailInfo?.totalStageAppearances || 32}</p>
+          <p className="text-lg font-black text-slate-400 mt-0.5">---</p>
           <p className="text-[11px] text-slate-500 mt-0.5 font-medium">Stage Sessions</p>
         </div>
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs">
@@ -178,50 +193,52 @@ export default function StudentClassDetailPage() {
         </div>
       </div>
 
-      {/* Section Tabs */}
-      <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
-        <button
-          onClick={() => setActiveTab('members')}
-          className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all',
-            activeTab === 'members'
-              ? 'bg-slate-900 text-white shadow-2xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          )}
-        >
-          <Users className="w-3.5 h-3.5" />
-          <span>Class Members ({students.length})</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all',
-            activeTab === 'overview'
-              ? 'bg-slate-900 text-white shadow-2xs'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          )}
-        >
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>Overview &amp; Sessions</span>
-        </button>
-        {detailInfo?.awards && detailInfo.awards.length > 0 && (
+      {/* Section Tabs — Only for ILM classes */}
+      {cy.ilmEnabled && (
+        <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
           <button
-            onClick={() => setActiveTab('awards')}
+            onClick={() => setActiveTab('members')}
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all',
-              activeTab === 'awards'
+              activeTab === 'members'
                 ? 'bg-slate-900 text-white shadow-2xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             )}
           >
-            <Award className="w-3.5 h-3.5" />
-            <span>Honors &amp; Awards ({detailInfo.awards.length})</span>
+            <Users className="w-3.5 h-3.5" />
+            <span>Class Members ({students.length})</span>
           </button>
-        )}
-      </div>
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all',
+              activeTab === 'overview'
+                ? 'bg-slate-900 text-white shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            )}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Overview &amp; Sessions</span>
+          </button>
+          {detailInfo?.awards && detailInfo.awards.length > 0 && (
+            <button
+              onClick={() => setActiveTab('awards')}
+              className={cn(
+                'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all',
+                activeTab === 'awards'
+                  ? 'bg-slate-900 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              )}
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Honors &amp; Awards ({detailInfo.awards.length})</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* TAB 1: Class Members Roster & Photo Cards */}
-      {activeTab === 'members' && (
+      {(activeTab === 'members' || !cy.ilmEnabled) && (
         <div className="space-y-4">
           {/* Search & View Mode Toggle */}
           <div className="bg-white rounded-2xl border border-gray-200 p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -276,43 +293,45 @@ export default function StudentClassDetailPage() {
           {viewMode === 'cards' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {filteredStudents.map((s, idx) => {
-                const role = getStudentRole(s.id);
-
                 return (
                   <div
                     key={s.id}
                     onClick={() => openStudentPhoto(s)}
-                    className="group bg-white rounded-2xl border border-gray-200 hover:border-indigo-300 p-4 shadow-xs hover:shadow-md transition-all cursor-pointer relative flex items-center gap-3.5 overflow-hidden"
+                    className="group bg-white rounded-2xl border border-gray-200 hover:border-indigo-300 p-4 shadow-xs hover:shadow-md transition-all cursor-pointer relative flex items-center justify-between gap-3.5 overflow-hidden"
                   >
-                    <span className="text-[10px] font-mono font-bold text-slate-300 group-hover:text-indigo-400 transition-colors absolute top-2.5 right-3">
-                      #{idx + 1}
-                    </span>
+                    <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                      <div className="relative flex-shrink-0">
+                        <StudentAvatar
+                          name={s.name}
+                          admissionNo={s.admissionNo}
+                          size="lg"
+                          className="group-hover:scale-105 group-hover:ring-2 group-hover:ring-indigo-500 transition-all shadow-2xs"
+                        />
+                      </div>
 
-                    <div className="relative flex-shrink-0">
-                      <StudentAvatar
-                        name={s.name}
-                        admissionNo={s.admissionNo}
-                        size="lg"
-                        className="group-hover:scale-105 group-hover:ring-2 group-hover:ring-indigo-500 transition-all shadow-2xs"
-                      />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-extrabold text-slate-900 text-sm truncate group-hover:text-indigo-600 transition-colors">
+                          {s.name}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          <span className="text-[11px] font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/80">
+                            #{s.admissionNo}
+                          </span>
+                          <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+                            Class {cy.displayName} Scholar
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex-1 min-w-0 pr-6">
-                      <h3 className="font-extrabold text-slate-900 text-sm truncate group-hover:text-indigo-600 transition-colors">
-                        {s.name}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
-                          #{s.admissionNo}
-                        </span>
-                        <span className="text-[10px] font-semibold text-slate-400">
-                          Class {cy.displayName}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-indigo-700 font-bold truncate mt-1 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-amber-500 flex-shrink-0" />
-                        <span className="truncate">{role}</span>
-                      </p>
+                    {/* Serial Number Badge */}
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0 pl-1">
+                      <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/80 group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:border-indigo-200 transition-colors shadow-2xs">
+                        #{idx + 1}
+                      </span>
+                      <span className="text-[10px] text-indigo-600 font-semibold group-hover:underline">
+                        View Photo
+                      </span>
                     </div>
                   </div>
                 );
@@ -330,7 +349,7 @@ export default function StudentClassDetailPage() {
                       <th className="px-4 py-3">#</th>
                       <th className="px-4 py-3">Scholar</th>
                       <th className="px-4 py-3">Admission #</th>
-                      <th className="px-4 py-3">Assigned Role</th>
+                      <th className="px-4 py-3">Class Role / Title</th>
                       <th className="px-4 py-3">Parent Guardian</th>
                       <th className="px-4 py-3 text-right">Photo Action</th>
                     </tr>
@@ -359,8 +378,8 @@ export default function StudentClassDetailPage() {
                           #{s.admissionNo}
                         </td>
                         <td className="px-4 py-3">
-                          <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-                            {getStudentRole(s.id)}
+                          <span className="font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 rounded-md">
+                            Class {cy.displayName} Scholar
                           </span>
                         </td>
                         <td className="px-4 py-3 text-slate-500">
@@ -389,8 +408,8 @@ export default function StudentClassDetailPage() {
         </div>
       )}
 
-      {/* TAB 2: Class Overview & Sessions */}
-      {activeTab === 'overview' && (
+      {/* TAB 2: Class Overview & Sessions (ILM Only) */}
+      {cy.ilmEnabled && activeTab === 'overview' && (
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
             <h3 className="font-black text-slate-900 text-base">Class Profile &amp; Focus Area</h3>

@@ -48,15 +48,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950">
+    <div className="flex h-screen overflow-hidden bg-slate-950 print:block print:h-auto print:overflow-visible print:bg-white">
       {/* Desktop sidebar - Complete, uninterrupted solid dark 288px (w-72) width */}
-      <aside className="hidden lg:flex lg:w-72 lg:min-w-[18rem] lg:max-w-[18rem] lg:flex-shrink-0 h-full bg-slate-950 border-r border-slate-800 z-30" suppressHydrationWarning>
+      <aside className="hidden lg:flex lg:w-72 lg:min-w-[18rem] lg:max-w-[18rem] lg:flex-shrink-0 h-full bg-slate-950 border-r border-slate-800 z-30 print:hidden" suppressHydrationWarning>
         <AppSidebar />
       </aside>
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-40 lg:hidden print:hidden">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setSidebarOpen(false)}
@@ -75,9 +75,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content - Strictly begins at x=288px, cleanly divided from the dark sidebar */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-gray-50">
-        <TopHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 bg-gray-50 print:block print:h-auto print:overflow-visible print:bg-white print:m-0 print:p-0">
+        <div className="print:hidden">
+          <TopHeader onMenuClick={() => setSidebarOpen(true)} />
+        </div>
+        <main className="flex-1 overflow-y-auto print:block print:h-auto print:overflow-visible print:m-0 print:p-0">
           {children}
         </main>
       </div>

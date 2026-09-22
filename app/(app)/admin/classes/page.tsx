@@ -11,6 +11,7 @@ import { classYears } from '@/lib/mock-data/cohorts';
 import { allMeetings } from '@/lib/mock-data/meetings';
 import { allStudents } from '@/lib/mock-data/students';
 import { cn } from '@/lib/utils';
+import { LEVEL_CLASS_NAMES } from '@/app/(app)/student/classes/page';
 
 // Get unique 10 classes for 2026-27 in level order
 const currentClasses = classYears
@@ -88,7 +89,7 @@ export default function ClassesPage() {
                     </div>
 
                     <p className="text-xs text-slate-500 font-medium mt-0.5 truncate max-w-xl">
-                      {detail?.category || `Class Level ${cy.level}`} · Level {cy.level}
+                      {LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`} · {cy.displayName}
                     </p>
                     
                     {/* Student Photo Cluster Preview */}
@@ -117,7 +118,7 @@ export default function ClassesPage() {
                     <p className="text-[10px] uppercase font-bold text-slate-400">Students</p>
                   </div>
                   <div className="text-left sm:text-center">
-                    <p className="font-extrabold text-slate-900 text-sm">{detail?.attendanceRate || '95%'}</p>
+                    <p className="font-extrabold text-slate-400 text-sm">---</p>
                     <p className="text-[10px] uppercase font-bold text-slate-400">Attendance</p>
                   </div>
 

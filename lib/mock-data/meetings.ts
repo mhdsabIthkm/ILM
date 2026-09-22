@@ -315,43 +315,8 @@ export const vahdaMeeting1Report: ReportSubmission = {
   ],
 };
 
-// ---- All meetings list (other classes) ----
+// ---- All meetings list (Only true single class report: VAHDA Meeting #01) ----
 export const allMeetings: ILMMeeting[] = [
   vahdaMeeting1,
-  {
-    id: 'meeting-sada-01',
-    classYearId: 'cy-sada-2627',
-    academicYearId: 'ay-2026-27',
-    meetingNumber: 1,
-    date: '2026-09-15',
-    theme: { english: 'The Importance of Knowledge', malayalam: 'അറിവിന്റെ പ്രാധാന്യം' },
-    status: 'approved',
-  },
-  {
-    id: 'meeting-sidra-01',
-    classYearId: 'cy-sidra-2627',
-    academicYearId: 'ay-2026-27',
-    meetingNumber: 1,
-    date: '2026-09-16',
-    theme: { english: 'Patience and Gratitude', malayalam: 'ക്ഷമയും നന്ദിയും' },
-    status: 'teacher_review',
-  },
-  {
-    id: 'meeting-suffa-01',
-    classYearId: 'cy-suffa-2627',
-    academicYearId: 'ay-2026-27',
-    meetingNumber: 1,
-    date: '2026-09-17',
-    theme: { english: 'Leadership in Islam', malayalam: 'ഇസ്ലാമിൽ നേതൃത്വം' },
-    status: 'finalizer_review',
-  },
-  {
-    id: 'meeting-alfa-01',
-    classYearId: 'cy-alfa-2627',
-    academicYearId: 'ay-2026-27',
-    meetingNumber: 1,
-    date: '2026-09-17',
-    theme: { english: 'Excellence and Accountability', malayalam: 'മികവും ഉത്തരവാദിത്തവും' },
-    status: 'submitted',
-  },
 ];
+

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Printer, Download, ArrowLeft } from 'lucide-react';
@@ -14,7 +15,7 @@ function sName(id: string) { return getStudent(id)?.name ?? id; }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-8">
+    <div className="mb-8 print:mb-6 break-inside-avoid print-break-inside-avoid">
       <h2 className="text-base font-bold text-slate-900 border-b-2 border-indigo-600 pb-1 mb-4">{title}</h2>
       {children}
     </div>
@@ -23,6 +24,22 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function FinalReportPage() {
   const params = useParams();
+  const [printTimestamp, setPrintTimestamp] = useState<string>('');
+
+  useEffect(() => {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+    setPrintTimestamp(`${dateStr}, ${timeStr}`);
+  }, []);
 
   const presentCount = vahdaMeeting1Attendance.filter(a => a.status === 'present').length;
   const absentCount = vahdaMeeting1Attendance.filter(a => a.status === 'absent').length;
@@ -33,37 +50,68 @@ export default function FinalReportPage() {
     return ra ? sName(ra.studentId) : '—';
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDownloadPDF = () => {
+    const originalTitle = document.title;
+    document.title = `MDIA_ILM_Meeting_01_Report_VAHDA_${vahdaMeeting1.date}`;
+    window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1000);
+  };
+
   return (
     <div>
       {/* No-print action bar */}
-      <div className="no-print bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3">
-        <Link href={`/admin/meetings/${params.id}`} className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600">
+      <div className="no-print bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-3 print:hidden">
+        <Link href={`/admin/meetings/${params.id}`} className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 font-semibold transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Meeting
         </Link>
         <div className="flex-1" />
-        <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-slate-50 text-slate-700">
-          <Printer className="w-4 h-4" /> Print
+        <button
+          onClick={handlePrint}
+          className="flex items-center gap-1.5 px-3.5 py-2 text-sm border border-gray-200 rounded-xl hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer transition-colors shadow-2xs"
+        >
+          <Printer className="w-4 h-4 text-slate-600" /> Print
         </button>
-        <button className="flex items-center gap-1.5 px-3 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+        <button
+          onClick={handleDownloadPDF}
+          className="flex items-center gap-1.5 px-3.5 py-2 text-sm bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-semibold cursor-pointer transition-colors shadow-xs"
+        >
           <Download className="w-4 h-4" /> Download PDF
         </button>
       </div>
 
       {/* Printable report */}
-      <div className="max-w-3xl mx-auto p-8 bg-white min-h-screen" id="print-report">
+      <div className="max-w-3xl mx-auto p-8 bg-white print:p-0 print:max-w-none print:w-full print:min-h-0" id="print-report">
         {/* Header */}
         <div className="text-center mb-8 pb-6 border-b-2 border-slate-200">
-          <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase mb-1">Malik Deenar Islamic Academy</p>
-          <h1 className="text-2xl font-bold text-slate-900">Integrated Learning Program</h1>
-          <div className="mt-4">
-            <span className="text-xl font-bold text-indigo-700">VAHDA</span>
-            <span className="text-slate-400 mx-2">·</span>
-            <span className="text-lg text-slate-700">ILM Meeting #01</span>
+          <p className="text-xs sm:text-sm font-bold tracking-widest text-slate-500 uppercase mb-1">
+            MDIA ILM — Malik Deenar Islamic Academy
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            Integrated Learning Program
+          </h1>
+          <div className="mt-3">
+            <span className="text-xl font-black text-indigo-700">VAHDA</span>
+            <span className="text-slate-400 mx-2 font-bold">·</span>
+            <span className="text-lg font-bold text-slate-800">ILM Meeting #01</span>
           </div>
-          <p className="mt-2 text-base font-semibold text-slate-800">{vahdaMeeting1.theme.english}</p>
+          <p className="mt-2 text-base font-bold text-slate-800">{vahdaMeeting1.theme.english}</p>
           <p className="text-sm text-slate-500 ml-text">{vahdaMeeting1.theme.malayalam}</p>
-          <p className="mt-2 text-sm text-slate-500">{formatDate(vahdaMeeting1.date)}</p>
-          <p className="text-xs text-slate-400 mt-0.5">Duration: {vahdaMeeting1.startTime} – {vahdaMeeting1.endTime}</p>
+          <div className="flex items-center justify-center gap-3 mt-2 text-xs text-slate-500 font-medium flex-wrap">
+            <span>Meeting Date: {formatDate(vahdaMeeting1.date)}</span>
+            <span>·</span>
+            <span>Duration: {vahdaMeeting1.startTime} – {vahdaMeeting1.endTime}</span>
+          </div>
+          {/* Exact Print Date & Timestamp Bar */}
+          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono flex-wrap gap-2">
+            <span className="font-semibold text-slate-600">Official Academy Meeting Record</span>
+            <span>Printed / Exported: {printTimestamp || '22 September 2026, 04:30 PM'}</span>
+          </div>
         </div>
 
         {/* Attendance */}
@@ -259,9 +307,9 @@ export default function FinalReportPage() {
         </Section>
 
         {/* Footer */}
-        <div className="mt-12 pt-6 border-t border-gray-200 text-center text-xs text-slate-400">
-          <p>MDIA ILM · Malik Deenar Islamic Academy · Integrated Learning Program</p>
-          <p className="mt-0.5">Generated {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        <div className="mt-12 pt-6 border-t border-gray-200 text-center text-xs text-slate-500 break-inside-avoid print-break-inside-avoid">
+          <p className="font-semibold text-slate-700">MDIA ILM — Malik Deenar Islamic Academy · Integrated Learning Program</p>
+          <p className="mt-1 font-mono text-[11px] text-slate-400">Official Academy Record · Printed / Exported on {printTimestamp || '22 September 2026, 04:30 PM'}</p>
         </div>
       </div>
     </div>

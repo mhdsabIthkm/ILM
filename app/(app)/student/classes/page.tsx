@@ -35,6 +35,19 @@ const currentClasses = classYears
   .filter(cy => cy.academicYearId === 'ay-2026-27' && cy.id !== 'cy-level5-2627')
   .sort((a, b) => a.level - b.level);
 
+export const LEVEL_CLASS_NAMES: Record<number, string> = {
+  1: 'Class One',
+  2: 'Class Two',
+  3: 'Class Three',
+  4: 'Class Four',
+  5: 'Class Five',
+  6: 'Class Six',
+  7: 'Class Seven',
+  8: 'Class Eight',
+  9: 'Class Nine',
+  10: 'Class Ten',
+};
+
 export default function StudentClassesDirectoryPage() {
   const [activeTab, setActiveTab] = useState<'classes' | 'students'>('classes');
   const [searchQuery, setSearchQuery] = useState('');
@@ -270,10 +283,10 @@ export default function StudentClassesDirectoryPage() {
                       </div>
 
                       <p className="text-xs font-bold text-indigo-700 mt-1">
-                        Level {cy.level} · {cy.displayName} Cohort
+                        {LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`} · {cy.displayName}
                       </p>
                       <p className="text-xs text-slate-500 mt-0.5 line-clamp-2 leading-relaxed">
-                        {detail?.focusDescription || detail?.category || `Official Academic Class Level ${cy.level}`}
+                        {detail?.focusDescription || detail?.category || `Official Academic ${LEVEL_CLASS_NAMES[cy.level] || `Class ${cy.level}`}`}
                       </p>
                     </div>
                   </div>
@@ -286,11 +299,11 @@ export default function StudentClassesDirectoryPage() {
                     </div>
                     <div className="bg-slate-50 p-2.5 rounded-xl text-center">
                       <p className="text-[10px] font-bold text-slate-400 uppercase">Attendance</p>
-                      <p className="text-sm font-black text-emerald-700">{detail?.attendanceRate || '95%'}</p>
+                      <p className="text-sm font-black text-slate-400">---</p>
                     </div>
                     <div className="bg-slate-50 p-2.5 rounded-xl text-center">
                       <p className="text-[10px] font-bold text-slate-400 uppercase">Sessions</p>
-                      <p className="text-sm font-black text-indigo-700">{detail?.totalStageAppearances || 30}</p>
+                      <p className="text-sm font-black text-slate-400">---</p>
                     </div>
                   </div>
 
@@ -372,7 +385,7 @@ export default function StudentClassesDirectoryPage() {
                       #{s.admissionNo}
                     </span>
                     <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-                      Class {s.className || 'MDIA'}
+                      Class {s.className || 'MDIA'} Scholar
                     </span>
                   </div>
                   {s.fatherName && (

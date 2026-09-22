@@ -38,10 +38,55 @@ html, body {
 
 /* Print styles */
 @media print {
-  .no-print { display: none !important; }
-  .print-only { display: block !important; }
-  body { background: white; }
-  .sidebar { display: none !important; }
+  @page {
+    size: A4 portrait;
+    margin: 12mm 12mm 12mm 12mm;
+  }
+
+  html, body {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .no-print, header, aside, nav, [role="navigation"] {
+    display: none !important;
+  }
+
+  /* Force all wrapper containers to unclip so multi-page printing works seamlessly */
+  div, main, section, article {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .break-inside-avoid, .print-break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #print-report {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: 0 !important;
+  }
 }
 
 /* Custom scrollbar */

@@ -20,7 +20,7 @@ export function TopHeader({ onMenuClick, title }: TopHeaderProps) {
   };
 
   return (
-    <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-3 flex-shrink-0 z-20">
+    <header className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-3 flex-shrink-0 z-20 print:hidden">
       {/* Mobile menu button */}
       <button
         onClick={onMenuClick}

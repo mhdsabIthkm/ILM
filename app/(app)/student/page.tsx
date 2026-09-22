@@ -320,76 +320,7 @@ export default function StudentDashboard() {
             </div>
           )}
 
-          {/* Public Speaking & Leadership Pathway Milestones */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-extrabold text-slate-900">
-                    Speech &amp; Leadership Pathway
-                  </h3>
-                  <p className="text-[11px] text-slate-500">
-                    Your progression through the official MDIA ILM curriculum
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
-                Level 1 of 4
-              </span>
-            </div>
 
-            {/* Milestones steps */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
-                    Milestone 1
-                  </span>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                </div>
-                <p className="text-xs font-extrabold text-slate-900">Ice-Breaker Presentation</p>
-                <p className="text-[11px] text-slate-500">Completed in Meeting #01</p>
-              </div>
-
-              <div className="p-3 rounded-xl border border-indigo-200 bg-indigo-50/40 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider">
-                    Milestone 2
-                  </span>
-                  <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-indigo-200/80 text-indigo-800">
-                    Next Up
-                  </span>
-                </div>
-                <p className="text-xs font-extrabold text-slate-900">Speech Organization &amp; Logic</p>
-                <p className="text-[11px] text-slate-500">Structuring core ideas &amp; thesis</p>
-              </div>
-
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 space-y-1 opacity-70">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    Milestone 3
-                  </span>
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                </div>
-                <p className="text-xs font-extrabold text-slate-700">Vocal Variety &amp; Body Language</p>
-                <p className="text-[11px] text-slate-400">Eye contact &amp; vocal dynamics</p>
-              </div>
-
-              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 space-y-1 opacity-70">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    Milestone 4
-                  </span>
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                </div>
-                <p className="text-xs font-extrabold text-slate-700">Persuasion &amp; Impromptu Debate</p>
-                <p className="text-[11px] text-slate-400">Advanced Table Topics mastery</p>
-              </div>
-            </div>
-          </div>
 
           {/* Evaluator Remarks & Observation Tags */}
           <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-3.5">
